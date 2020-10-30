@@ -150,12 +150,12 @@ Resources:
           CidrIp: 0.0.0.0/0
 Outputs: 
   GroxVpc:
-    Description: Subnet which contains developer machines. 
+    Description: A VPC with a unique color name. 
     Value: !Ref GroxVpc
     Export:
       Name: GroxTealVpc
   GroxDevSubnet:
-    Description: Subnet which contains developer machines. 
+    Description: A subnet for developer machines. 
     Value: !Ref GroxDevSubnet
     Export:
       Name: GroxTealDevSubnet
@@ -165,7 +165,7 @@ Outputs:
     Export:
       Name: GroxTealDevSecurityGroup
   GroxDmzSubnet:
-    Description: Subnet which contains publicly accessible Internet servers. 
+    Description: A subnet for publicly accessible Internet servers. 
     Value: !Ref GroxDmzSubnet
     Export:
       Name: GroxTealDmzSubnet
@@ -175,7 +175,7 @@ Outputs:
     Export:
       Name: GroxTealWebSecurityGroup
   GroxEdiSecurityGroup:
-    Description: SSH access from within this VPC or by designated (whitelisted) client IP address.
+    Description: SFTP server - open to SSH access from within this VPC or by designated (whitelisted) client IP address.
     Value: !Ref GroxEdiSecurityGroup
     Export:
       Name: GroxTealEdiSecurityGroup
