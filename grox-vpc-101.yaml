@@ -2,10 +2,10 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: A VPC with three subnets--dmz, dev, and prv.  dmz and dev are attached to an Internet Gateway, prv is not.
 Parameters:
   DevuserClientAccessCidrIp:
-    Description: IP address for devuser client SecurityGroupIngress as xxx.xxx.xxx.xxx/32 CIDR block.
+    Description: IP address for devuser client SecurityGroupIngress as xxx.xxx.xxx.xxx/32 CIDR block. Security Group dev allows access only from this IP block.
     Type: String
   EdiClientAccessCidrIp:
-    Description: IP address for EDI SecurityGroupIngress as xxx.xxx.xxx.xxx/32 CIDR block.
+    Description: IP address for EDI SecurityGroupIngress as xxx.xxx.xxx.xxx/32 CIDR block. Security Group edi allows SFTP access only from this list of IP addresses or from the local VPC.
     Type: String
 Resources:
   GroxVpc:
