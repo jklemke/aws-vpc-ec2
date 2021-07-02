@@ -3,7 +3,7 @@ Description: Creates an EC2 linux web and sftp server in a dmz subnet using dock
 Mappings:
   RegionImageMap:
     "eu-west-1":
-      "LinuxWebSftpServer": "ami-071c8352caea7e1e9"
+      "LinuxWebSftpServer": "ami-062417f18ca5781cb"
 Resources:
   WebSftpLinux101:
     Type: AWS::EC2::Instance
@@ -19,14 +19,16 @@ Resources:
       NetworkInterfaces:
         - AssociatePublicIpAddress: true
           DeleteOnTermination: true
+          PrivateIpAddress: 10.181.4.101
           SubnetId: !ImportValue GroxTealDmzSubnet
           DeviceIndex: 0
           GroupSet: 
             - !ImportValue GroxTealWebSecurityGroup
             - !ImportValue GroxTealEdiSecurityGroup
-  TheraHermElasticIpAssociation:
-    Type: AWS::EC2::EIPAssociation 
-    Properties: 
-      AllocationId: eipalloc-07bd4b5e5a67ea576
-      InstanceId: !Ref WebSftpLinux101
+# Uncomment if there is an elastic IP you want to associate with this box
+#  TheraHermElasticIpAssociation:
+#    Type: AWS::EC2::EIPAssociation 
+#    Properties: 
+#      AllocationId: eipalloc-0ae4148ea8d3df390
+#      InstanceId: !Ref WebSftpLinux101
 

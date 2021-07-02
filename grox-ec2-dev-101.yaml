@@ -3,7 +3,7 @@ Description: Creates a basic EC2 linux development machine in a development subn
 Mappings:
   RegionImageMap:
     "eu-west-1":
-      "LinuxDevbox": "ami-0102d955494c55f30"
+      "LinuxDevbox": "ami-0c5720db44ff2753a"
 Resources:
   DevBoxLinux101:
     Type: AWS::EC2::Instance
@@ -19,6 +19,7 @@ Resources:
       NetworkInterfaces:
         - AssociatePublicIpAddress: true
           DeleteOnTermination: true
+          PrivateIpAddress: 10.181.8.101
           SubnetId: !ImportValue GroxTealDevSubnet
           DeviceIndex: 0
           GroupSet: 

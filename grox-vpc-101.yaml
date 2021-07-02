@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: A VPC with three subnets--dmz, dev, and prv.  dmz and dev are attached to an Internet Gateway, prv is not.
+Description: A VPC with three subnets. dmz and dev are attached to an Internet Gateway. prv is attached to a NAT Gateway.
 Parameters:
   DevuserClientAccessCidrIp:
     Description: IP address for devuser client SecurityGroupIngress as xxx.xxx.xxx.xxx/32 CIDR block. Security Group dev allows access only from this IP block.
@@ -13,7 +13,7 @@ Resources:
     Properties:
       Tags:
         - Key: Name
-          Value: grox-teal
+          Value: teal-vpc
       CidrBlock: 10.181.0.0/16
       EnableDnsSupport: true
       EnableDnsHostnames: true
@@ -27,8 +27,56 @@ Resources:
   GroxVpcGatewayAttachment:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
-        VpcId: !Ref GroxVpc
-        InternetGatewayId: !Ref GroxInternetGateway
+      VpcId: !Ref GroxVpc
+      InternetGatewayId: !Ref GroxInternetGateway
+  GroxNatElasticIP:
+    DependsOn: GroxVpcGatewayAttachment
+    Type: AWS::EC2::EIP
+    Properties:
+      Tags:
+        - Key: Name
+          Value: eip-nat-teal
+      Domain: vpc	  
+  GroxNatGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: nat-teal
+      AllocationId:
+        Fn::GetAtt:
+        - GroxNatElasticIP
+        - AllocationId
+      ConnectivityType: public
+      SubnetId: !Ref GroxDmzSubnet	 
+  GroxIgwRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      Tags:
+        - Key: Name
+          Value: rtb-igw-teal
+      VpcId: !Ref GroxVpc
+  GroxNatRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      Tags:
+        - Key: Name
+          Value: rtb-nat-teal
+      VpcId: !Ref GroxVpc
+  GroxInternetGatewayRoute:
+    Type: AWS::EC2::Route
+    DependsOn: GroxVpcGatewayAttachment
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref GroxInternetGateway
+      RouteTableId: !Ref GroxIgwRouteTable
+  GroxNatGatewayRoute:
+    Type: AWS::EC2::Route
+    DependsOn: GroxVpcGatewayAttachment
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref GroxNatGateway
+      RouteTableId: !Ref GroxNatRouteTable
   GroxDmzSubnet:
     Type: AWS::EC2::Subnet
     Properties:
@@ -55,21 +103,7 @@ Resources:
           Value: teal-prv
       VpcId: !Ref GroxVpc
       CidrBlock: 10.181.12.0/22
-      MapPublicIpOnLaunch: true
-  GroxIgwRouteTable:
-    Type: AWS::EC2::RouteTable
-    Properties:
-      Tags:
-        - Key: Name
-          Value: igw-teal
-      VpcId: !Ref GroxVpc
-  GroxInternetGatewayRoute:
-    Type: AWS::EC2::Route
-    DependsOn: GroxVpcGatewayAttachment
-    Properties:
-      DestinationCidrBlock: 0.0.0.0/0
-      GatewayId: !Ref GroxInternetGateway
-      RouteTableId: !Ref GroxIgwRouteTable
+      MapPublicIpOnLaunch: false
   GroxDmzSubnetRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
@@ -80,6 +114,11 @@ Resources:
     Properties:
       RouteTableId: !Ref GroxIgwRouteTable
       SubnetId: !Ref GroxDevSubnet
+  GroxPrvSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref GroxNatRouteTable
+      SubnetId: !Ref GroxPrvSubnet
   GroxDevSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -148,6 +187,23 @@ Resources:
       SecurityGroupEgress:
         - IpProtocol: -1
           CidrIp: 0.0.0.0/0
+  GroxPrivateSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      Tags:
+        - Key: Name
+          Value: sg-teal-prv 
+      GroupName: teal-prv
+      GroupDescription: Private servers -- SSH allowed only from within this VPC, using an RSA key with passphrase.
+      VpcId: !Ref GroxVpc
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 10.181.0.0/16
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
 Outputs: 
   GroxVpc:
     Description: A VPC with a unique color name. 
@@ -159,16 +215,21 @@ Outputs:
     Value: !Ref GroxDevSubnet
     Export:
       Name: GroxTealDevSubnet
-  GroxDevSecurityGroup:
-    Description: Developer machines--SSH and RDP in, all traffic out.  Access controlled by a combination of RSA key with passphrase, VPN, white-listed IP addresses, SSH tunneling.
-    Value: !Ref GroxDevSecurityGroup
-    Export:
-      Name: GroxTealDevSecurityGroup
   GroxDmzSubnet:
     Description: A subnet for publicly accessible Internet servers. 
     Value: !Ref GroxDmzSubnet
     Export:
       Name: GroxTealDmzSubnet
+  GroxPrvSubnet:
+    Description: A subnet for private subnet servers. 
+    Value: !Ref GroxPrvSubnet
+    Export:
+      Name: GroxTealPrvSubnet
+  GroxDevSecurityGroup:
+    Description: Developer machines--SSH and RDP in, all traffic out.  Access controlled by a combination of RSA key with passphrase, VPN, white-listed IP addresses, SSH tunneling.
+    Value: !Ref GroxDevSecurityGroup
+    Export:
+      Name: GroxTealDevSecurityGroup
   GroxWebSecurityGroup:
     Description: Internet Servers - open to HTTP and HTTPS.  SSH access from within this VPC.
     Value: !Ref GroxWebSecurityGroup
@@ -179,4 +240,9 @@ Outputs:
     Value: !Ref GroxEdiSecurityGroup
     Export:
       Name: GroxTealEdiSecurityGroup
+  GroxPrivateSecurityGroup:
+    Description: Private Servers.  SSH access only from within this VPC.
+    Value: !Ref GroxPrivateSecurityGroup
+    Export:
+      Name: GroxTealPrivateSecurityGroup
 
