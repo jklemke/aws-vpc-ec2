@@ -25,10 +25,4 @@ Resources:
           GroupSet: 
             - !ImportValue GroxTealWebSecurityGroup
             - !ImportValue GroxTealEdiSecurityGroup
-# Uncomment if there is an elastic IP you want to associate with this box
-#  TheraHermElasticIpAssociation:
-#    Type: AWS::EC2::EIPAssociation 
-#    Properties: 
-#      AllocationId: eipalloc-0ae4148ea8d3df390
-#      InstanceId: !Ref WebSftpLinux101
 
