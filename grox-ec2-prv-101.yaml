@@ -12,15 +12,15 @@ Resources:
         - Key: Name
           Value: teal-db-linux-102
         - Key: Image
-          Value: !FindInMap [RegionImageMap, !Ref "AWS::Region", "LinuxDbbox"] 
+          Value: !FindInMap [RegionImageMap, !Ref "AWS::Region", "LinuxDbbox"]
       ImageId: !FindInMap [RegionImageMap, !Ref "AWS::Region", "LinuxDbbox"]
       InstanceType: t2.medium
       KeyName: grox_key_aws_prvserver
       NetworkInterfaces:
         - AssociatePublicIpAddress: false
           DeleteOnTermination: true
-          PrivateIpAddress: 10.181.12.101		  
+          PrivateIpAddress: 10.181.12.101
           SubnetId: !ImportValue GroxTealPrvSubnet
           DeviceIndex: 0
-          GroupSet: 
+          GroupSet:
             - !ImportValue GroxTealPrivateSecurityGroup

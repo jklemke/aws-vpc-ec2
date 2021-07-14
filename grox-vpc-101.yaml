@@ -36,7 +36,7 @@ Resources:
       Tags:
         - Key: Name
           Value: eip-nat-teal
-      Domain: vpc	  
+      Domain: vpc
   GroxNatGateway:
     Type: AWS::EC2::NatGateway
     Properties:
@@ -48,7 +48,7 @@ Resources:
         - GroxNatElasticIP
         - AllocationId
       ConnectivityType: public
-      SubnetId: !Ref GroxDmzSubnet	 
+      SubnetId: !Ref GroxDmzSubnet
   GroxIgwRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
