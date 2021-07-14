@@ -6,7 +6,7 @@
 * grox-ec2-prv-101.yaml build a linux box for hosting a postgres DB in the private subnet, based on a private AWS ami
 * deploy-vpc.py creates vpc stack from the command line
 * deploy-ec2.py creates dev, dmz and prv stacks from the command line
-* delete-ec2.py delete dev, dmz and prv stack from the the command line
+* delete-ec2.py deletes dev, dmz and prv stack from the the command line
 * deploy-vpc.py deletes vpc stack from the command line
 
 We use a color term -- in this case "teal" -- to give our components a catchy name for use in filtering, billing, etc.
