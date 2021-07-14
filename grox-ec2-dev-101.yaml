@@ -3,7 +3,7 @@ Description: Creates a basic EC2 linux development machine in a development subn
 Mappings:
   RegionImageMap:
     "eu-west-1":
-      "LinuxDevbox": "ami-0c5720db44ff2753a"
+      "LinuxDevbox": "ami-0121d864e84641c22"
 Resources:
   DevBoxLinux101:
     Type: AWS::EC2::Instance
@@ -14,7 +14,7 @@ Resources:
         - Key: Image
           Value: !FindInMap [RegionImageMap, !Ref "AWS::Region", "LinuxDevbox"] 
       ImageId: !FindInMap [RegionImageMap, !Ref "AWS::Region", "LinuxDevbox"]
-      InstanceType: t2.micro
+      InstanceType: t2.medium
       KeyName: grox_key_aws_devuser
       NetworkInterfaces:
         - AssociatePublicIpAddress: true

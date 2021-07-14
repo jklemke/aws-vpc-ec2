@@ -3,7 +3,7 @@ Description: Creates a basic EC2 linux postgres database server in a private sub
 Mappings:
   RegionImageMap:
     "eu-west-1":
-      "LinuxDbbox": "ami-00e895363fe30dbd0"
+      "LinuxDbbox": "ami-0dc99832528906ec8"
 Resources:
   DbBoxLinux101:
     Type: AWS::EC2::Instance
@@ -14,7 +14,7 @@ Resources:
         - Key: Image
           Value: !FindInMap [RegionImageMap, !Ref "AWS::Region", "LinuxDbbox"] 
       ImageId: !FindInMap [RegionImageMap, !Ref "AWS::Region", "LinuxDbbox"]
-      InstanceType: t2.micro
+      InstanceType: t2.medium
       KeyName: grox_key_aws_prvserver
       NetworkInterfaces:
         - AssociatePublicIpAddress: false

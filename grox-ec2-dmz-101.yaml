@@ -3,7 +3,7 @@ Description: Creates an EC2 linux web and sftp server in a dmz subnet using dock
 Mappings:
   RegionImageMap:
     "eu-west-1":
-      "LinuxWebSftpServer": "ami-062417f18ca5781cb"
+      "LinuxWebSftpServer": "ami-0312d6710b34339f9"
 Resources:
   WebSftpLinux101:
     Type: AWS::EC2::Instance
@@ -14,7 +14,7 @@ Resources:
         - Key: Image
           Value: !FindInMap [RegionImageMap, !Ref "AWS::Region", "LinuxWebSftpServer"] 
       ImageId: !FindInMap [RegionImageMap, !Ref "AWS::Region", "LinuxWebSftpServer"]
-      InstanceType: t2.micro
+      InstanceType: t2.medium
       KeyName: grox_key_aws_dmzserver
       NetworkInterfaces:
         - AssociatePublicIpAddress: true
