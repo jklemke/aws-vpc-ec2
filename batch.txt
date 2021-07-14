@@ -1,0 +1,12 @@
+aws cloudformation deploy --template-file .\grox-vpc-101.yaml --stack-name teal-vpc  --parameter-overrides DevuserClientAccessCidrIp=2.29.146.0/32 EdiClientAccessCidrIp=165.227.159.219/32
+aws cloudformation deploy --template-file .\grox-ec2-dev-101.yaml --stack-name teal-dev
+aws cloudformation deploy --template-file .\grox-ec2-dmz-101.yaml --stack-name teal-dmz
+aws cloudformation deploy --template-file .\grox-ec2-prv-101.yaml --stack-name teal-prv
+
+aws cloudformation delete-stack --stack-name teal-vpc
+aws cloudformation delete-stack --stack-name teal-prv
+aws cloudformation delete-stack --stack-name teal-dmz
+aws cloudformation delete-stack --stack-name teal-dev
+
+
+

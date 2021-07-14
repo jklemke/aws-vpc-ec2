@@ -1,0 +1,5 @@
+.aws
+deploy-vpc.ps1
+deploy-ec2.ps1
+delete-vpc.ps1
+delete-ec2.ps1
